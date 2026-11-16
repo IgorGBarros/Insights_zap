@@ -1,7 +1,7 @@
 ---
 title: Insights Zap — Especificação
-status: rascunho v0.1
-atualizado: 2026-11-14
+status: implementado (v1) — pgba-boilerplate, branch claude/insights-whatsapp
+atualizado: 2026-11-16
 ---
 
 # Insights Zap — Especificação
@@ -319,17 +319,31 @@ POST /api/v1/insights/importar-exportacao/                 .zip do "Exportar con
 | **3 — Ação** | Próximos passos → tarefa com aprovação, digest semanal, comandos `?` e `/semana` | Digest de segunda chega e é lido |
 | **4 — Expansão** | Grupos permitidos, OCR de imagem, export para Obsidian/repo, ligar a setores | — |
 
-## 10. Decisões em aberto
+## 10. Decisões tomadas
 
-| # | Pergunta | Recomendação |
-|---|---|---|
-| D1 | Vertical no PGBA ou sistema separado? | **Vertical no PGBA** (§4) |
-| D2 | Qual número conectar: seu pessoal, o do primo, ou os dois? | Começar com **o seu** (vê os dois lados da conversa). Os dois só se quiserem capturar chats do primo com terceiros. |
-| D3 | Transcrição de áudio na nuvem (Groq) ou local? | Groq (barato, rápido) com decisão registrada; local (faster-whisper) se houver GPU. |
-| D4 | Bot pode mandar mensagem (digest, respostas a `?`)? | Sim, **só** para "Mensagem para você mesmo". |
-| D5 | Export do conhecimento: vault Obsidian, este repo, ou só PGBA? | Só PGBA no MVP; export na fase 4. |
-| D6 | Quem vê o quê: você e o primo veem tudo? | Sim — mesma empresa (tenant), mesmo acesso. |
-| D7 | Primo também usa a tela do PGBA? | Sim, usuário próprio no tenant. |
+| # | Decisão |
+|---|---|
+| D1 | **Vertical dentro do PGBA** (app `insights`, núcleo, área de permissão Conhecimento). |
+| D2 | **O seu número** é o conectado (vê os dois lados da conversa com o primo). |
+| D3 | **Transcrição escolhida em Configurações**: automático (Groq → OpenAI), Groq, OpenAI, local (faster-whisper no servidor, sem nuvem) ou desligada. A tela mostra qual opção está pronta. |
+| D4 | O bot só escreve no "Mensagem para você mesmo" (digest e respostas a comandos). |
+| D5 | **Exportar para o Obsidian**: cada item vira nota em `Insights/AAAA-MM/` no vault da empresa (configurável; o sync do vault ignora essas notas para não duplicar a busca). |
+| D6/D7 | Você e o primo veem tudo, cada um com usuário próprio na empresa. |
+
+### Onde está o código
+
+- Backend: `pgba-boilerplate/backend_api/Api/insights/` (docs: `pgba-boilerplate/docs/INSIGHTS.md`)
+- Telas: `pgba-boilerplate/frontend/src/components/empresa/insights*`
+- Testes: `tests/unit/test_insights_regras.py`, `tests/integration/test_insights.py`
+
+### Diferenças em relação ao rascunho
+
+- "Virar tarefa" cria a `agency.Task` direto (o clique já é a decisão de uma pessoa), para o
+  Head do setor sugerido ou, sem setor, o CEO virtual.
+- O chat "Mensagem para você mesmo" também é capturado (o que você manda para si mesmo vira item),
+  além de receber os comandos.
+- A captura por padrão grava as mensagens comuns do chat permitido só como contexto (as 5 antes e
+  depois de um item); elas não viram item nem vão para a busca.
 
 ## 11. Glossário
 

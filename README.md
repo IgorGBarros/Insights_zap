@@ -16,5 +16,5 @@ o Design System já existentes.
 
 ## Status
 
-Especificação (v0.1). Próximo passo: **Fase 0** — instância `insights` na Evolution API e
-webhook gravando as mensagens do chat permitido (ver `docs/SPEC.md` §9).
+**v1 implementada** no `pgba-boilerplate`, branch `claude/insights-whatsapp`
+(Empresa → Módulos → Insights do WhatsApp). Como ligar: `pgba-boilerplate/docs/INSIGHTS.md`.
